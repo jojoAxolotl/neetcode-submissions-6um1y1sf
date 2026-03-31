@@ -1,0 +1,42 @@
+class MedianFinder:
+# To efficiently find the median while numbers keep coming, we split the stream into two halves:
+
+# A max-heap (small) that stores the smaller half of the numbers. The largest  number of this half is on top.
+# A min-heap (large) that stores the larger  half of the numbers. The smallest number of this half is on top.
+
+# The goal:
+# Ensure both heaps are balanced in size (difference at most 1).
+# Ensure all numbers in small are ≤ all numbers in large.
+
+# This setup allows:
+# Median = top of the bigger heap (if odd count)
+# Median = average of both tops (if even count)
+# This gives O(log n) insert and O(1) median lookup.
+
+    def __init__(self):
+        # two heaps, large, small, minheap, maxheap
+        # heaps should be equal size
+        self.small, self.large = [], []
+        
+
+    def addNum(self, num: int) -> None:
+        if self.large and num > self.large[0]:
+            heapq.heappush(self.large, num)
+        else:
+            heapq.heappush(self.small, -1 * num)
+
+        if len(self.small) > len(self.large) + 1:
+            val = -1 * heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        if len(self.large) > len(self.small) + 1:
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -1 * val)
+
+    def findMedian(self) -> float:
+        if len(self.small) > len(self.large):
+            return -1 * self.small[0]
+        elif len(self.large) > len(self.small):
+            return self.large[0]
+        return (-1 * self.small[0] + self.large[0]) / 2.0
+        
+        

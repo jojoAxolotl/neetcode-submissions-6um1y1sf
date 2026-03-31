@@ -1,0 +1,25 @@
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        if s[0] == "0": return 0
+        s = list(s)
+
+        for i in range(1, len(s)):
+            if s[i] == "0":
+                if s[i-1] not in "12" or s[i-1] == "0":
+                    return 0
+                else:
+                    s[i] = "#"
+                    s[i-1] = "#"
+
+        a = [0] * len(s) # amount
+        a[0] = 1
+        for i in range(1, len(s)):
+            if ((s[i-1] == "1" and s[i] != "#"or 
+                (s[i-1] == "2" and s[i] in "123456"))):
+                if i-2 >= 0:
+                    a[i] = a[i-1] + a[i-2]
+                else:
+                    a[i] = a[i-1] + 1
+            else:
+                a[i]=a[i-1]
+        return a[len(s)-1]
